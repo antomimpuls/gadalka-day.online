@@ -325,8 +325,11 @@ footer{background:#0a0814;padding:40px 0;text-align:center;border-top:1px solid 
 <body>
 
 <div class="sticky-messengers" id="stickyMessengers">
-<a href="https://wa.me/79604485578" class="btn btn-wa" target="_blank" rel="noopener" data-wa="true">📲 Чат в WhatsApp</a>
-<a href="https://t.me/anna_more_magic" class="btn btn-tg" target="_blank" rel="noopener" data-telegram="true">✈ Написать в Telegram</a>
+<div class="sticky-messenger-options" id="stickyMessengerOptions">
+<a class="btn btn-wa sticky-messenger-option" data-wa="true" role="button" tabindex="0">📲 WhatsApp</a>
+<a class="btn btn-tg sticky-messenger-option" data-telegram="true" role="button" tabindex="0">✈ Telegram</a>
+</div>
+<button type="button" class="btn sticky-messenger-toggle" id="stickyMessengerToggle" aria-label="Открыть выбор мессенджера" aria-expanded="false">💬</button>
 </div>
 
 <section class="hero">
@@ -787,65 +790,6 @@ footer{background:#0a0814;padding:40px 0;text-align:center;border-top:1px solid 
         <p style="text-align:center;margin-top:40px">Используя Сайт, вы подтверждаете согласие с настоящей Политикой конфиденциальности.</p>
         </div>
         </div>
-<div class="age-widget" id="ageWidget">
-  <button class="age-widget-btn" data-open-age>
-    <span class="age-widget-icon">18+</span>
-    <span class="age-widget-text">Подтвердите возраст</span>
-  </button>
-</div>
-<div class="age-modal" id="ageModal">
-  <div class="age-modal-overlay" onclick="closeAgeModal()"></div>
-  <div class="age-modal-content">
-    <button type="button" class="age-modal-close" onclick="closeAgeModal()" aria-label="Закрыть">&times;</button>
-    <div class="age-modal-icon">18+</div>
-    <h2 class="age-modal-title">Подтвердите возраст</h2>
-    <p class="age-modal-text">Контакты показываются только взрослым. Подтвердите, что вам есть 18 лет.</p>
-    <label class="age-modal-checkbox">
-      <input type="checkbox" id="ageConfirmCheckbox">
-      <span>Мне исполнилось 18 лет, я принимаю условия</span>
-    </label>
-    <div class="age-modal-actions">
-      <button type="button" class="btn age-confirm-btn" id="ageConfirmBtn" disabled>Подтвердить и открыть контакты</button>
-      <button type="button" class="btn age-cancel-btn" onclick="closeAgeModal()">Отмена</button>
-    </div>
-  </div>
-</div>
-<div class="age-unlock-modal" id="ageUnlockModal">
-  <strong>Контакты разблокированы</strong>
-  <p>Теперь вы можете написать гадалке в WhatsApp и Telegram.</p>
-  <button class="btn" onclick="closeUnlockModal()">Понятно</button>
-</div>
-<div class="contact-intent-modal" id="contactIntentModal">
-  <div class="contact-intent-overlay" onclick="closeContactIntentModal()"></div>
-  <div class="contact-intent-content">
-    <button type="button" class="contact-intent-close" onclick="closeContactIntentModal()" aria-label="Закрыть">&times;</button>
-    <h3 class="contact-intent-title">Последний шаг перед открытием <span class="contact-intent-highlight" id="intentMessengerLabel">WhatsApp</span></h3>
-    <p class="contact-intent-text">Выберите тему обращения и подтвердите, что готовы написать. Так я защищаю контакты от случайных кликов.</p>
-    <div class="intent-step">
-      <label for="intentTopic">Что нужно решить?</label>
-      <select id="intentTopic" class="intent-select">
-        <option value="">Выберите ситуацию</option>
-        <option value="love">Вернуть или удержать любимого</option>
-        <option value="negative">Снять порчу, сглаз или негатив</option>
-        <option value="diagnostic">Нужна диагностика и консультация</option>
-        <option value="other">Другая проблема</option>
-      </select>
-    </div>
-    <div class="intent-step">
-      <label>Подтвердите намерение</label>
-      <label class="intent-checkbox">
-        <input type="checkbox" id="intentReadyCheckbox">
-        <span>Я действительно хочу открыть чат и описать ситуацию</span>
-      </label>
-    </div>
-    <div class="intent-timer" id="intentTimerHint"></div>
-    <div class="contact-intent-actions">
-      <a href="#" class="btn intent-confirm-btn disabled" id="intentConfirmBtn" role="button" aria-disabled="true">Открыть чат</a>
-      <button type="button" class="btn intent-cancel-btn" onclick="closeContactIntentModal()">Вернуться</button>
-    </div>
-  </div>
-</div>
-
 <script>
 (() => {
 const SETTINGS = window.__SITE_SETTINGS__ || {};
@@ -905,8 +849,7 @@ function applyAgeState(){
     document.querySelectorAll('.messenger-link').forEach(link => {
         link.classList.toggle('is-disabled', !ageConfirmed);
     });
-    if (ageWidget) { ageWidget.style.display = ageConfirmed ? 'none' : 'block'; }
-    document.body.classList.toggle('contacts-locked', !ageConfirmed);
+    document.body.classList.remove('contacts-locked');
     updateContactLinks();
 }
 
@@ -922,8 +865,6 @@ function updateContactLinks(){
             phoneLink.href = `tel:${phoneNum}`;
             phoneLink.classList.remove('is-locked');
         } else {
-            phoneLink.href = '#ageWidget';
-            if (!phoneLink.classList.contains('is-locked')) { phoneLink.classList.add('is-locked'); }
             phoneLink.removeAttribute('target');
         }
     }
